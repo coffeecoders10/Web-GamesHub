@@ -7,6 +7,8 @@ type GameEntry = {
   /** Badge on the cover; also drives the filter bar. */
   tag: string;
   players?: string;
+  /** How many players (or teams) are needed, e.g. "2-5 players". */
+  playerCount?: string;
   minutes?: string;
   /** Where Play goes. Leave out to show "Coming soon" on the card. */
   href?: string;

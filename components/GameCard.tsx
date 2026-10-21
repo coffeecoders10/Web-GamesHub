@@ -26,7 +26,7 @@ export function GameCard({ game }: { game: Game }) {
 
         <div className="card-foot">
           <Text size="1" color="gray">
-            {[game.players, game.minutes].filter(Boolean).join(" \u00b7 ")}
+            {[game.players, game.playerCount, game.minutes].filter(Boolean).join(" \u00b7 ")}
           </Text>
           {live ? (
             <Button asChild size="2" className="play">

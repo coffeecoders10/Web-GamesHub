@@ -9,9 +9,20 @@
       "tagline": "A collection of multiplayer card games. Grab a seat and deal in.",
       "tag": "Card",
       "players": "Multiplayer",
+      "playerCount": "2-5 players",
       "minutes": "5-10 mins",
       "href": "/card-games",
       "color": "#8c5226"
+    },
+    {
+      "title": "Pictionary",
+      "tagline": "Sketch it, guess it, win it. Split into teams and let the doodles fly.",
+      "tag": "Party",
+      "players": "Local Multiplayer",
+      "playerCount": "2-5 teams",
+      "minutes": "10-20 mins",
+      "href": "/pictionary",
+      "color": "#1e3a8a"
     }
   ]
 }
