@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { Badge, Button, Heading, Text, Tooltip } from "@radix-ui/themes";
 import { PlayIcon } from "@radix-ui/react-icons";
 import { CoverArt } from "@/components/CoverArt";
@@ -7,11 +8,11 @@ export function GameCard({ game }: { game: Game }) {
   const live = Boolean(game.href);
 
   return (
-    <article className={`card${live ? " card-live" : ""}`}>
+    <article className={`card${live ? " card-live" : ""}`} style={{ "--accent": game.color } as CSSProperties}>
       <div className="cover">
         <CoverArt palette={game.palette} seed={game.seed} />
         <Badge className="cover-badge" color="gray" variant="solid" highContrast radius="full">
-          {game.genre}
+          {game.tag}
         </Badge>
       </div>
 
@@ -25,7 +26,7 @@ export function GameCard({ game }: { game: Game }) {
 
         <div className="card-foot">
           <Text size="1" color="gray">
-            {game.players} &middot; {game.minutes}
+            {[game.players, game.minutes].filter(Boolean).join(" \u00b7 ")}
           </Text>
           {live ? (
             <Button asChild size="2" className="play">

@@ -4,21 +4,21 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button, SegmentedControl, Text, TextField } from "@radix-ui/themes";
 import { Cross2Icon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { GameCard } from "@/components/GameCard";
-import type { Game } from "@/lib/games";
+import { comingSoon, type Game } from "@/lib/games";
 
 export function GameLibrary({ games }: { games: Game[] }) {
   const [query, setQuery] = useState("");
   const [genre, setGenre] = useState("All");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const genres = useMemo(() => ["All", ...Array.from(new Set(games.map((g) => g.genre)))], [games]);
+  const genres = useMemo(() => ["All", ...Array.from(new Set(games.map((g) => g.tag)))], [games]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     return games.filter(
       (g) =>
-        (genre === "All" || g.genre === genre) &&
-        (!q || `${g.title} ${g.tagline} ${g.genre}`.toLowerCase().includes(q)),
+        (genre === "All" || g.tag === genre) &&
+        (!q || `${g.title} ${g.tagline} ${g.tag}`.toLowerCase().includes(q)),
     );
   }, [games, query, genre]);
 
@@ -96,7 +96,20 @@ export function GameLibrary({ games }: { games: Game[] }) {
             </li>
           ))}
         </ul>
-      ) : (
+      ) : null}
+
+      {results.length > 0 && genre === "All" && !query.trim() ? (
+        <div className="soon">
+          <Text as="p" size="4" weight="medium">
+            {comingSoon.title}
+          </Text>
+          <Text as="p" size="2" color="gray">
+            {comingSoon.message}
+          </Text>
+        </div>
+      ) : null}
+
+      {results.length === 0 ? (
         <div className="empty">
           <Text as="p" size="4" weight="medium">
             No games match &ldquo;{query.trim() || genre}&rdquo;
@@ -108,7 +121,7 @@ export function GameLibrary({ games }: { games: Game[] }) {
             Show all games
           </Button>
         </div>
-      )}
+      ) : null}
     </section>
   );
 }

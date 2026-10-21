@@ -1,0 +1,17 @@
+{
+  "comingSoon": {
+    "title": "More games coming soon",
+    "message": "New games are brewing. Check back soon."
+  },
+  "games": [
+    {
+      "title": "Card Games Library",
+      "tagline": "A collection of multiplayer card games. Grab a seat and deal in.",
+      "tag": "Card",
+      "players": "Multiplayer",
+      "minutes": "5-10 mins",
+      "href": "/card-games",
+      "color": "#8c5226"
+    }
+  ]
+}

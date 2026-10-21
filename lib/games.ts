@@ -1,67 +1,52 @@
-export type Game = {
-  slug: string;
+import data from "@/data/games.json";
+
+/** One entry in data/games.json. Add a game there and it appears on the hub. */
+type GameEntry = {
   title: string;
   tagline: string;
-  genre: "Arcade" | "Puzzle" | "Platformer" | "Strategy";
-  players: string;
-  minutes: string;
-  /** Cover colors, back layer to front layer. */
-  palette: [string, string, string, string, string];
-  seed: number;
-  /** Set this to the game's URL when it goes live. Cards without one show "Coming soon". */
+  /** Badge on the cover; also drives the filter bar. */
+  tag: string;
+  players?: string;
+  minutes?: string;
+  /** Where Play goes. Leave out to show "Coming soon" on the card. */
   href?: string;
+  /** Main card color (hex). The cover and hover accent are derived from it. */
+  color: string;
 };
 
-export const games: Game[] = [
-  {
-    slug: "brew-rush",
-    title: "Brew Rush",
-    tagline: "Pull shots and fill orders before the queue spills out the door.",
-    genre: "Arcade",
-    players: "1 player",
-    minutes: "5 min",
-    palette: ["#f0d9cf", "#dcae93", "#c98f72", "#b57a60", "#8f5f4d"],
-    seed: 1,
-  },
-  {
-    slug: "bug-hunt",
-    title: "Bug Hunt",
-    tagline: "Read the snippet, spot the bug, and ship the fix against the clock.",
-    genre: "Puzzle",
-    players: "1 player",
-    minutes: "10 min",
-    palette: ["#d8e2da", "#a9c0b0", "#86a592", "#6a8977", "#4b6657"],
-    seed: 2,
-  },
-  {
-    slug: "latte-layers",
-    title: "Latte Layers",
-    tagline: "Sort milk, espresso, and foam into perfect layers, one pour at a time.",
-    genre: "Puzzle",
-    players: "1 player",
-    minutes: "15 min",
-    palette: ["#efe0cf", "#e0c29f", "#cfa578", "#b88a5c", "#8a6643"],
-    seed: 3,
-  },
-  {
-    slug: "semicolon-run",
-    title: "Semicolon Run",
-    tagline: "Leap across broken code to catch the one semicolon that fixes the build.",
-    genre: "Platformer",
-    players: "1 player",
-    minutes: "8 min",
-    palette: ["#dcdbea", "#b3b1d3", "#9390bb", "#7773a0", "#5a567c"],
-    seed: 4,
-  },
-  {
-    slug: "commit-and-conquer",
-    title: "Commit & Conquer",
-    tagline: "Merge branches and claim the repo in a two-player turn-based duel.",
-    genre: "Strategy",
-    players: "2 players",
-    minutes: "20 min",
-    palette: ["#ecd5d8", "#d4a5ac", "#bf8790", "#a46b76", "#7c4e58"],
-    seed: 5,
-  },
-];
+export type Game = Omit<GameEntry, "color"> & {
+  slug: string;
+  /** Cover colors, back layer to front layer. */
+  palette: string[];
+  seed: number;
+  color: string;
+};
 
+export const comingSoon: { title: string; message: string } = data.comingSoon;
+
+function mix(hex: string, target: [number, number, number], amount: number) {
+  const n = parseInt(hex.replace("#", ""), 16);
+  const from = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  const out = from.map((c, i) => Math.round(c + (target[i] - c) * amount));
+  return `#${out.map((c) => c.toString(16).padStart(2, "0")).join("")}`;
+}
+
+/** Light-to-dark ramp around the main color. */
+function paletteFor(color: string) {
+  return [
+    mix(color, [255, 255, 255], 0.7),
+    mix(color, [255, 255, 255], 0.4),
+    mix(color, [255, 255, 255], 0.15),
+    color,
+    mix(color, [0, 0, 0], 0.3),
+  ];
+}
+
+const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+export const games: Game[] = (data.games as GameEntry[]).map((g, i) => ({
+  ...g,
+  slug: slugify(g.title),
+  palette: paletteFor(g.color),
+  seed: i + 1,
+}));
